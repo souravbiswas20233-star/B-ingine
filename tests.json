@@ -1,0 +1,375 @@
+[
+  {
+    "name": "Require authentication before app access",
+    "sanity": true,
+    "viewport": "desktop",
+    "covers": [
+      "mandatory authentication gate",
+      "Google sign-in option",
+      "email sign-in option",
+      "anonymous access protection"
+    ],
+    "description": "Verifies a signed-out visitor must authenticate before using Bishwa Search Engine.",
+    "steps": [
+      "Open Bishwa in a signed-out browser session",
+      "Verify Continue with Google and email sign-in are visible",
+      "Verify search tools are not accessible before authentication succeeds"
+    ],
+    "expected": "A dedicated sign-in screen is shown and the search engine remains inaccessible until authentication succeeds."
+  },
+  {
+    "name": "Create a creator channel with an optimized custom logo",
+    "viewport": "desktop",
+    "covers": [
+      "profile navigation to My Channel",
+      "channel creation form validation",
+      "unique public channel handle",
+      "custom channel logo upload to Supabase Storage",
+      "Firestore channel persistence",
+      "change channel logo",
+      "open uploaded channel logo in full-screen preview",
+      "client-side logo optimization",
+      "signed Supabase upload with progress"
+    ],
+    "description": "Verifies an authenticated user can create a channel, upload an optimized logo with progress feedback, replace it and retain the latest logo.",
+    "steps": [
+      "Sign in to Bishwa",
+      "Open the profile menu and choose My Channel",
+      "Enter a channel name, unique handle and category, then choose a JPG or PNG logo",
+      "Create the channel, replace its logo from the creator dashboard, and reload"
+    ],
+    "expected": "The channel dashboard shows the selected logo and retains the latest logo after reload; duplicate handles are rejected."
+  },
+  {
+    "name": "Publish photos and videos with upload progress",
+    "viewport": "mobile",
+    "covers": [
+      "creator studio content type selection",
+      "first four free video publishing",
+      "image upload to Supabase Storage",
+      "text post publishing",
+      "channel content persistence",
+      "image resizing and compression",
+      "resumable TUS image upload for files over 6 MB",
+      "resumable TUS video upload for files over 6 MB",
+      "upload progress feedback"
+    ],
+    "description": "Verifies the creator can publish allowed media and text content and sees the published items in the channel.",
+    "steps": [
+      "Open an existing creator channel",
+      "Choose Image, select a photo and publish it",
+      "Verify the photo appears in Published content",
+      "Choose Video, upload an accepted video file, then publish a text post",
+      "Refresh the channel dashboard"
+    ],
+    "expected": "Published content appears in the channel after refresh, and video publishing is limited to the first four free videos until creator access is activated."
+  },
+  {
+    "name": "Block a fifth free video without blocking posts",
+    "viewport": "desktop",
+    "covers": [
+      "fifth-video free quota guardrail",
+      "paid creator access pending state",
+      "free image and text publishing remain available"
+    ],
+    "description": "Verifies the free video allowance is enforced while free image and text posts remain available.",
+    "setup": [
+      "Create a channel and publish four video items"
+    ],
+    "steps": [
+      "Try to publish a fifth video without an active creator period",
+      "Verify the creator access message appears",
+      "Switch to Text post and publish a post"
+    ],
+    "expected": "The fifth video is not published, while the text post can still be published."
+  },
+  {
+    "name": "Discover a public channel and join its Super community",
+    "viewport": "mobile",
+    "covers": [
+      "public channel directory",
+      "channel search and category filter",
+      "public channel detail page",
+      "public video and post visibility",
+      "subscribe and unsubscribe persistence",
+      "subscriber count",
+      "Super action replaces Subscribe",
+      "Super membership and count persistence",
+      "horizontal home category strip",
+      "large vertical home creator feed",
+      "newest-first ordering of public posts",
+      "automatic live feed updates after a creator publishes",
+      "open channel logos from the home feed"
+    ],
+    "description": "Verifies a second authenticated user can find a public channel, view its public content, subscribe and later unsubscribe.",
+    "setup": [
+      "Actor A signs in and creates a public channel with a published post",
+      "Actor B signs in with a different account"
+    ],
+    "steps": [
+      "Actor B opens Public Channels from the home page or navigation menu",
+      "Search for Actor A's channel and open its public page",
+      "Tap Super and verify Super member state and count",
+      "Tap again to leave and verify the state changes back",
+      "Return Home and horizontally scroll categories below the search box",
+      "Scroll down through the large creator feed and verify the newest published media appears first",
+      "Tap a creator logo to open the enlarged logo preview"
+    ],
+    "expected": "The public channel and published items are visible to Actor B; Super membership updates the state and count, home categories scroll horizontally, and the home page shows a newest-first scrolling creator feed with expandable logos."
+  },
+  {
+    "name": "Filter category feeds and render map results",
+    "viewport": "mobile",
+    "covers": [
+      "Images category filters public photo uploads",
+      "Videos category filters public video uploads",
+      "News category shows public text posts",
+      "Maps category renders an embedded map for the current search",
+      "Maps occupies the full viewport on desktop and mobile",
+      "map controls remain accessible over the full-screen map",
+      "category labels remain unchanged"
+    ],
+    "description": "Verifies the existing category names open populated, type-specific content views without changing navigation labels.",
+    "steps": [
+      "Publish one public image, one public video and one public text post from a creator channel",
+      "Open Images and verify only the photo appears",
+      "Open Videos and verify only the video appears",
+      "Open News and verify the text post appears",
+      "Open Maps and search for a place"
+    ],
+    "expected": "Each category shows the matching public content, Maps displays an interactive map edge-to-edge across the full viewport with floating Directions and Back controls, and the original category labels remain unchanged."
+  },
+  {
+    "name": "Delete a creator's published media",
+    "viewport": "desktop",
+    "covers": [
+      "delete control appears on own published content",
+      "delete requires confirmation",
+      "Firebase ownership verification before deletion",
+      "Supabase media object deletion",
+      "Firestore published post deletion",
+      "deleted post disappears from the creator dashboard and public feed"
+    ],
+    "description": "Verifies only the channel owner can permanently delete a published post and its media object.",
+    "setup": [
+      "Create a channel and publish a photo or video"
+    ],
+    "steps": [
+      "Open My Channel and locate the published item",
+      "Choose Delete and confirm the warning",
+      "Reload the creator dashboard and public feed"
+    ],
+    "expected": "The published post and its media are removed, and the item no longer appears after reload."
+  },
+  {
+    "name": "Track search and viewed content in account history",
+    "viewport": "desktop",
+    "covers": [
+      "search activity history",
+      "viewed public video and post history",
+      "activity timestamps and channel names",
+      "history cloud sync across sessions",
+      "user can clear activity history"
+    ],
+    "description": "Verifies searches and opened or played public creator content appear in the signed-in user's durable activity history.",
+    "steps": [
+      "Sign in as Actor A and search for a phrase",
+      "Open a public creator post and play a public video",
+      "Open History and verify the search, post and video activities with times and channel names",
+      "Refresh and verify the activities remain, then clear history"
+    ],
+    "expected": "History shows both searches and viewed content, retains the entries after refresh, and removes them after the user confirms Clear history."
+  },
+  {
+    "name": "Comment on a public post and delete your own comment",
+    "viewport": "mobile",
+    "covers": [
+      "comments load on public posts and videos",
+      "authenticated user can publish a comment",
+      "comment author name and timestamp display",
+      "comment owner can delete their own comment",
+      "other users cannot delete someone else's comment"
+    ],
+    "description": "Verifies authenticated comments are visible on public creator posts and that deletion is restricted to the comment author.",
+    "setup": [
+      "Actor A publishes a public video or text post",
+      "Actor B signs in with a separate account"
+    ],
+    "steps": [
+      "Actor B opens Actor A's public post and expands Comments",
+      "Actor B writes and publishes a comment",
+      "Verify the comment appears with Actor B's name and time",
+      "Delete the comment as Actor B and verify it disappears"
+    ],
+    "expected": "The comment is visible to the viewer, can be deleted by its author, and the server rejects deletion attempts from another account."
+  },
+  {
+    "name": "Register devices and receive private chat notifications",
+    "viewport": "mobile",
+    "covers": [
+      "explicit notification permission request",
+      "Firebase Messaging service worker registration",
+      "server-side device token registration",
+      "authenticated sender verification before push",
+      "private chat notification delivery",
+      "notification click opens Bishwa",
+      "push delivery status feedback"
+    ],
+    "description": "Verifies each signed-in recipient can register their device and receive a push alert for a new private chat message.",
+    "setup": [
+      "Actor A and Actor B sign in on separate devices",
+      "Actor B enables message notifications"
+    ],
+    "steps": [
+      "Actor B opens Messages and taps Turn on notifications",
+      "Verify device registration succeeds",
+      "Actor A sends Actor B a private message",
+      "Put Actor B's browser in the background and verify the alert arrives",
+      "Tap the notification and verify Bishwa opens"
+    ],
+    "expected": "The recipient device is registered securely and receives a message notification while Bishwa is in the background; the sender sees whether push delivery was confirmed."
+  },
+  {
+    "name": "Show unread chat counts and share an image",
+    "viewport": "mobile",
+    "covers": [
+      "unread message count in recent chats",
+      "global unread message count badge beside the top navigation message icon",
+      "read marker clears unread count and removes the unread badge after the chat is opened",
+      "image picker in private chat",
+      "selected image preview and remove action",
+      "secure per-user Supabase chat image upload",
+      "image URL stored in Firebase Realtime Database chat message",
+      "image rendered inside chat bubble"
+    ],
+    "description": "Verifies new messages are visible in the chat list and users can send an image securely without using Firebase Storage.",
+    "setup": [
+      "Actor A and Actor B have an existing private chat"
+    ],
+    "steps": [
+      "Actor A sends a message while Actor B is viewing another page",
+      "Verify Actor B sees an unread count beside the conversation",
+      "Actor B opens the chat and verify the unread count clears",
+      "Actor B attaches an image, previews it and sends it",
+      "Verify the image appears in the conversation on both devices"
+    ],
+    "expected": "Unread counts appear beside the recent chat and top navigation message icon, then disappear after the conversation is opened and marked as read; the selected photo is uploaded to the chat user's Supabase folder and appears as an image message in the shared Firebase chat."
+  },
+  {
+    "name": "Show the channel invitation on every app entry for channel owners",
+    "viewport": "desktop",
+    "covers": [
+      "delayed channel invitation after app entry",
+      "channel ownership lookup by signed-in Firebase user",
+      "existing channel opens creator dashboard",
+      "close button dismisses invitation for current visit only",
+      "invitation appears again after next app entry"
+    ],
+    "description": "Verifies an authenticated channel owner sees the invitation after entering Bishwa, can dismiss it temporarily, and sees it again on the next app entry.",
+    "setup": [
+      "Actor A signs in and owns an existing Bishwa channel"
+    ],
+    "steps": [
+      "Actor A opens Bishwa and waits for the channel invitation",
+      "Verify the invitation offers Open My Channel",
+      "Close the invitation using the X button",
+      "Reload Bishwa and wait for the invitation again",
+      "Choose Open My Channel and verify the creator dashboard opens"
+    ],
+    "expected": "The owner sees the channel invitation after each app entry, X hides it only for the current visit, and Open My Channel opens the existing creator dashboard."
+  },
+  {
+    "name": "Invite a signed-in viewer to create a channel",
+    "viewport": "mobile",
+    "covers": [
+      "channel absence lookup for signed-in user",
+      "create channel invitation action",
+      "temporary close without persistent dismissal",
+      "channel creation page opens from invitation"
+    ],
+    "description": "Verifies a signed-in user without a channel receives a creation invitation and can dismiss it temporarily or continue to the channel form.",
+    "setup": [
+      "Actor B signs in with an account that does not own a Bishwa channel"
+    ],
+    "steps": [
+      "Actor B opens Bishwa and waits for the channel invitation",
+      "Verify the invitation offers Create Your Channel",
+      "Close it with X, reload Bishwa and verify it appears again",
+      "Choose Create Your Channel and verify the channel creation form opens"
+    ],
+    "expected": "A user without a channel receives the creation invitation after each app entry, can dismiss it for the current visit, and can open the channel creation form."
+  },
+  {
+    "name": "Award Bishwa Verified through the owner-only BS option",
+    "viewport": "desktop",
+    "covers": [
+      "admin verification controls are hidden from non-admin accounts",
+      "admin user search is protected by Firebase token verification",
+      "DS and RSS do not award verification",
+      "BS awards Bishwa Verified status through the backend",
+      "verified creator posts are prioritized in the public feed",
+      "two-year account tenure receives automatic Bishwa verification",
+      "verification congratulations appear on the next app entry"
+    ],
+    "description": "Verifies only the signed-in Bishwa owner can award a verified badge with BS and that the verified status is persisted and announced to the member.",
+    "setup": [
+      "The owner account is signed in as biswassuprotik3@mail.com",
+      "A separate member account exists with a saved Bishwa profile"
+    ],
+    "steps": [
+      "Open Profile and search for the member",
+      "Choose DS and verify the member remains unverified",
+      "Choose RSS and verify the member remains unverified",
+      "Choose BS and verify the member receives Bishwa Verified status",
+      "Sign in as the member on a separate session and reopen Bishwa"
+    ],
+    "expected": "Only the owner account can access the controls; DS and RSS do not award a badge, BS awards it, and the member sees the Bishwa Team verification congratulations on the next app entry."
+  },
+  {
+    "name": "Verify Bishwa Special as the official Bishwa channel",
+    "viewport": "desktop",
+    "covers": [
+      "owner-only official channel verification action",
+      "backend checks the signed-in Bishwa owner identity",
+      "exact Bishwa Special channel is marked Bishwa Verified",
+      "official channel badge appears in public channel directory and detail page",
+      "blue B✔️ mark appears beside every verified channel post in the home feed",
+      "blue B✔️ mark appears beside every verified post in creator dashboard and public channel posts",
+      "official channel posts receive verified feed priority"
+    ],
+    "description": "Verifies the Bishwa owner can mark the unique Bishwa Special channel as the official verified channel and that the badge is visible throughout public discovery.",
+    "setup": [
+      "A public active channel named Bishwa Special exists",
+      "The owner account is signed in as biswassuprotik3@mail.com"
+    ],
+    "steps": [
+      "Open Public Channels as the Bishwa owner",
+      "Choose Verify Bishwa Special as official",
+      "Verify the server confirms the channel and the verified badge appears beside its name",
+      "Return Home and verify every Bishwa Special post shows a blue B✔️ beside the channel name",
+      "Open My Channel and verify B✔️ appears beside each published post title",
+      "Open the public Bishwa Special page and verify B✔️ appears beside each post title"
+    ],
+    "expected": "Only the owner account can verify the exact Bishwa Special channel; the blue B✔️ mark appears beside every post from that channel in the creator dashboard, public channel page and home feed, while its posts receive verified feed priority."
+  },
+  {
+    "name": "Open and play media from a public channel",
+    "viewport": "mobile",
+    "covers": [
+      "admin V control appears on public channel detail for the owner account",
+      "admin verification panel opens from public channel detail",
+      "tap photo opens full-screen media viewer",
+      "tap video opens playable video viewer",
+      "media viewer closes and returns to channel content"
+    ],
+    "description": "Verifies the owner can reach verification controls from a public channel page and visitors can open photos and play videos by tapping their media cards.",
+    "steps": [
+      "Sign in as biswassuprotik3@mail.com and open a public channel detail page",
+      "Tap V and verify the Bishwa owner verification panel appears",
+      "Close the panel, then tap a published photo and verify it opens in the media viewer",
+      "Close the viewer, tap a published video and verify the video player opens",
+      "Press play and then close the viewer"
+    ],
+    "expected": "The owner sees V and can open the verification panel; photos open in a full-screen viewer and videos open in a playable player."
+  }
+]
